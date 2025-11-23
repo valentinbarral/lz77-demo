@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LZ77 Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- CODIFICADOR (LZ77 Encoder) -->
+    <h1 data-i18n="encoder.title">LZ77 Demo - Encoder</h1>
+
+    <!-- Controles superiores -->
+    <div class="top-controls">
+        <div class="language-selector">
+            <select id="languageSelector" onchange="setLanguage(this.value)">
+                <option value="es">Español</option>
+                <option value="en">English</option>
+                <option value="gl">Galego</option>
+            </select>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle" title="Cambiar tema">
+            ☀️
+        </button>
+    </div>
+
+    <div class="container">
+        <div class="controls">
+            <label for="inputStr" data-i18n="encoder.input.label">Entrada:</label>
+            <input type="text" id="inputStr" value="ABBCBCABABCA">
+            
+            <button id="btnStep" class="btn-primary" onclick="step()" data-i18n="encoder.btn.step">Paso siguiente ▶</button>
+            <button id="btnAuto" class="btn-secondary" onclick="toggleAuto()" data-i18n="encoder.btn.auto">Auto play ▶▶</button>
+            <button id="btnReset" class="btn-danger" onclick="reset()" data-i18n="encoder.btn.reset">Reiniciar ↺</button>
+        </div>
+
+        <div class="inspector-container">
+            <div class="inspector-line"><strong data-i18n="encoder.inspector.action">Acción:</strong> <span id="inspectorText">Esperando inicio...</span></div>
+            <div class="inspector-line" style="margin-top:5px"><strong data-i18n="encoder.inspector.buffer">Buffer actual:</strong> <span id="bufferDisplay" class="buffer-display">[]</span></div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item"><div class="dot" style="background:var(--search-bg); border-color:var(--search-border)"></div><span data-i18n="encoder.legend.window">Ventana (historia)</span></div>
+            <div class="legend-item"><div class="dot" style="border: 2px solid var(--check-color); background:#dbeafe"></div><span data-i18n="encoder.legend.checking">Operando (comprobando)</span></div>
+            <div class="legend-item"><div class="dot" style="background:var(--match-highlight)"></div><span data-i18n="encoder.legend.found">Encontrado</span></div>
+            <div class="legend-item"><div class="dot" style="background:#fecaca; border-color:#ef4444"></div><span data-i18n="encoder.legend.fail">Fallo (no encontrado)</span></div>
+        </div>
+
+        <div class="tape-container">
+            <div class="tape" id="tape"></div>
+        </div>
+
+        <div class="status-bar" id="statusBar"></div>
+
+        <div class="output-panel">
+            <div class="panel-box">
+                <div class="panel-title" data-i18n="encoder.panel.log">Log de decisiones</div>
+                <div id="logList"></div>
+            </div>
+            <div class="panel-box">
+                <div class="panel-title" data-i18n="encoder.panel.output">Salida codificada</div>
+                <div id="tokenList"></div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- DECODIFICADOR (LZ77 Decoder) -->
+    <h1 data-i18n="decoder.title">LZ77 Demo - Decoder</h1>
+    
+    <div class="container">
+        <div class="controls">
+            <label for="decodeInput" data-i18n="decoder.input.label">Secuencia codificada:</label>
+            <input type="text" id="decodeInput" value="'A' 'B' <1, 1> 'C' <2, 2> <6, 4>">
+            
+            <button id="btnDecStep" class="btn-primary" onclick="stepDecoder()" data-i18n="decoder.btn.step">Paso siguiente ▶</button>
+            <button id="btnDecAuto" class="btn-secondary" onclick="toggleAutoDecoder()" data-i18n="decoder.btn.auto">Auto play ▶▶</button>
+            <button id="btnDecReset" class="btn-danger" onclick="resetDecoder()" data-i18n="decoder.btn.reset">Reiniciar ↺</button>
+        </div>
+
+        <div class="inspector-container">
+             <div class="inspector-line"><strong data-i18n="decoder.inspector.token">Token actual:</strong> <span id="decInspectorText">Esperando inicio...</span></div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item"><div class="dot" style="background:#f1f5f9; border:1px solid #cbd5e1"></div><span data-i18n="decoder.legend.decoded">Texto decodificado</span></div>
+            <div class="legend-item"><div class="dot" style="background:var(--copy-source); border:1px solid var(--match-border)"></div><span data-i18n="decoder.legend.source">Origen (leyendo copia)</span></div>
+            <div class="legend-item"><div class="dot" style="background:var(--copy-dest); border:1px solid #16a34a"></div><span data-i18n="decoder.legend.dest">Destino (escribiendo copia)</span></div>
+        </div>
+
+        <div class="tape-container">
+            <div class="tape" id="decTape"></div>
+        </div>
+
+        <div class="status-bar" id="decStatusBar"></div>
+
+        <div class="output-panel">
+            <div class="panel-box" style="grid-column: span 2;">
+                <div class="panel-title" data-i18n="decoder.panel.tokens">Tokens a procesar</div>
+                <div id="decTokenList" style="display:flex; flex-wrap:wrap; align-content:flex-start;"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="copyright-footer">
+        <p>© 2025 Valentin Barral | Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></p>
+    </footer>
+
+    <script src="translations.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
