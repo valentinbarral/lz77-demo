@@ -441,10 +441,40 @@ function stopAutoDecoder() {
 }
 
 
-// Inicialización global
+// ==========================================
+// HAMBURGER MENU
+// ==========================================
+
+function toggleMenu() {
+    const controls = document.getElementById('headerControls');
+    if (controls) controls.classList.toggle('open');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    const controls = document.getElementById('headerControls');
+    const hamburger = document.querySelector('.hamburger');
+    if (!controls || !hamburger) return;
+    if (!controls.contains(e.target) && e.target !== hamburger) {
+        controls.classList.remove('open');
+    }
+});
+
+// ==========================================
+// THEME & LANGUAGE BRIDGE
+// ==========================================
+
+function changeLang(lang) {
+    setLanguage(lang);
+}
+
+// ==========================================
+// GLOBAL INIT
+// ==========================================
+
 elInput.addEventListener('change', () => { if(cursor===0) init(); });
 elDecInput.addEventListener('change', () => initDecoder());
 
-init(); // Init encoder
-initDecoder(); // Init decoder
+init();
+initDecoder();
 

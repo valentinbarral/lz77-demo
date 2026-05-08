@@ -3,51 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LZ77 Demo</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <title>LZ77 Demo — Teaching Hub</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <!-- CODIFICADOR (LZ77 Encoder) -->
-    <h1 data-i18n="encoder.title">LZ77 Demo - Encoder</h1>
-
-    <!-- Controles superiores -->
-    <div class="top-controls">
-        <div class="language-selector">
-            <select id="languageSelector" onchange="setLanguage(this.value)">
+    <!-- ── HEADER ── -->
+    <header>
+        <button class="hamburger" onclick="toggleMenu()" aria-label="Menú">☰</button>
+        <h1 data-i18n="title">LZ77 Demo</h1>
+        <nav class="header-controls" id="headerControls">
+            <div class="nav-links">
+                <a href="#encoder" data-i18n="nav.encoder">Encoder</a>
+                <a href="#decoder" data-i18n="nav.decoder">Decoder</a>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()">🌓</button>
+            <select class="lang-sel" onchange="changeLang(this.value)" id="langSelect">
                 <option value="es">Español</option>
                 <option value="en">English</option>
                 <option value="gl">Galego</option>
             </select>
-        </div>
-        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle" title="Cambiar tema">
-            ☀️
-        </button>
-    </div>
+        </nav>
+    </header>
 
-    <div class="container">
+    <!-- ── DESKTOP SECTION NAV ── -->
+    <nav id="mainNav">
+        <a href="#encoder" data-i18n="nav.encoder">Encoder</a>
+        <a href="#decoder" data-i18n="nav.decoder">Decoder</a>
+    </nav>
+
+    <!-- ── ENCODER ── -->
+    <div class="container" id="encoder">
         <div class="controls">
             <label for="inputStr" data-i18n="encoder.input.label">Entrada:</label>
             <input type="text" id="inputStr" value="ABBCBCABABCA">
-            
+
             <button id="btnStep" class="btn-primary" onclick="step()" data-i18n="encoder.btn.step">Paso siguiente ▶</button>
             <button id="btnAuto" class="btn-secondary" onclick="toggleAuto()" data-i18n="encoder.btn.auto">Auto play ▶▶</button>
             <button id="btnReset" class="btn-danger" onclick="reset()" data-i18n="encoder.btn.reset">Reiniciar ↺</button>
         </div>
 
         <div class="inspector-container">
-            <div class="inspector-line"><strong data-i18n="encoder.inspector.action">Acción:</strong> <span id="inspectorText">Esperando inicio...</span></div>
-            <div class="inspector-line" style="margin-top:5px"><strong data-i18n="encoder.inspector.buffer">Buffer actual:</strong> <span id="bufferDisplay" class="buffer-display">[]</span></div>
+            <div class="inspector-line">
+                <strong data-i18n="encoder.inspector.action">Acción:</strong>
+                <span id="inspectorText">Esperando inicio...</span>
+            </div>
+            <div class="inspector-line">
+                <strong data-i18n="encoder.inspector.buffer">Buffer actual:</strong>
+                <span id="bufferDisplay" class="buffer-display">[]</span>
+            </div>
         </div>
 
         <div class="legend">
-            <div class="legend-item"><div class="dot" style="background:var(--search-bg); border-color:var(--search-border)"></div><span data-i18n="encoder.legend.window">Ventana (historia)</span></div>
-            <div class="legend-item"><div class="dot" style="border: 2px solid var(--check-color); background:#dbeafe"></div><span data-i18n="encoder.legend.checking">Operando (comprobando)</span></div>
-            <div class="legend-item"><div class="dot" style="background:var(--match-highlight)"></div><span data-i18n="encoder.legend.found">Encontrado</span></div>
-            <div class="legend-item"><div class="dot" style="background:#fecaca; border-color:#ef4444"></div><span data-i18n="encoder.legend.fail">Fallo (no encontrado)</span></div>
+            <div class="legend-item">
+                <div class="dot" style="background:var(--search-bg); border-color:var(--search-border)"></div>
+                <span data-i18n="encoder.legend.window">Ventana (historia)</span>
+            </div>
+            <div class="legend-item">
+                <div class="dot" style="border:2px solid var(--check-color); background:var(--search-bg)"></div>
+                <span data-i18n="encoder.legend.checking">Operando (comprobando)</span>
+            </div>
+            <div class="legend-item">
+                <div class="dot" style="background:var(--match-highlight)"></div>
+                <span data-i18n="encoder.legend.found">Encontrado</span>
+            </div>
+            <div class="legend-item">
+                <div class="dot" style="background:var(--fail-bg); border-color:var(--fail-color)"></div>
+                <span data-i18n="encoder.legend.fail">Fallo (no encontrado)</span>
+            </div>
         </div>
 
         <div class="tape-container">
@@ -70,27 +93,37 @@
 
     <hr class="section-divider">
 
-    <!-- DECODIFICADOR (LZ77 Decoder) -->
-    <h1 data-i18n="decoder.title">LZ77 Demo - Decoder</h1>
-    
-    <div class="container">
+    <!-- ── DECODER ── -->
+    <div class="container" id="decoder">
         <div class="controls">
             <label for="decodeInput" data-i18n="decoder.input.label">Secuencia codificada:</label>
             <input type="text" id="decodeInput" value="'A' 'B' <1, 1> 'C' <2, 2> <6, 4>">
-            
+
             <button id="btnDecStep" class="btn-primary" onclick="stepDecoder()" data-i18n="decoder.btn.step">Paso siguiente ▶</button>
             <button id="btnDecAuto" class="btn-secondary" onclick="toggleAutoDecoder()" data-i18n="decoder.btn.auto">Auto play ▶▶</button>
             <button id="btnDecReset" class="btn-danger" onclick="resetDecoder()" data-i18n="decoder.btn.reset">Reiniciar ↺</button>
         </div>
 
         <div class="inspector-container">
-             <div class="inspector-line"><strong data-i18n="decoder.inspector.token">Token actual:</strong> <span id="decInspectorText">Esperando inicio...</span></div>
+             <div class="inspector-line">
+                <strong data-i18n="decoder.inspector.token">Token actual:</strong>
+                <span id="decInspectorText">Esperando inicio...</span>
+            </div>
         </div>
-        
+
         <div class="legend">
-            <div class="legend-item"><div class="dot" style="background:#f1f5f9; border:1px solid #cbd5e1"></div><span data-i18n="decoder.legend.decoded">Texto decodificado</span></div>
-            <div class="legend-item"><div class="dot" style="background:var(--copy-source); border:1px solid var(--match-border)"></div><span data-i18n="decoder.legend.source">Origen (leyendo copia)</span></div>
-            <div class="legend-item"><div class="dot" style="background:var(--copy-dest); border:1px solid #16a34a"></div><span data-i18n="decoder.legend.dest">Destino (escribiendo copia)</span></div>
+            <div class="legend-item">
+                <div class="dot" style="background:var(--literal-bg); border:1px solid var(--border)"></div>
+                <span data-i18n="decoder.legend.decoded">Texto decodificado</span>
+            </div>
+            <div class="legend-item">
+                <div class="dot" style="background:var(--copy-source); border:1px solid var(--match-border)"></div>
+                <span data-i18n="decoder.legend.source">Origen (leyendo copia)</span>
+            </div>
+            <div class="legend-item">
+                <div class="dot" style="background:var(--copy-dest); border:1px solid #16a34a"></div>
+                <span data-i18n="decoder.legend.dest">Destino (escribiendo copia)</span>
+            </div>
         </div>
 
         <div class="tape-container">
@@ -100,13 +133,14 @@
         <div class="status-bar" id="decStatusBar"></div>
 
         <div class="output-panel">
-            <div class="panel-box" style="grid-column: span 2;">
+            <div class="panel-box" style="grid-column:span 2;">
                 <div class="panel-title" data-i18n="decoder.panel.tokens">Tokens a procesar</div>
-                <div id="decTokenList" style="display:flex; flex-wrap:wrap; align-content:flex-start;"></div>
+                <div id="decTokenList" class="dec-token-list"></div>
             </div>
         </div>
     </div>
 
+    <!-- ── FOOTER ── -->
     <footer class="copyright-footer">
         <p>© 2025 Valentin Barral | Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></p>
     </footer>

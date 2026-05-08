@@ -2,6 +2,9 @@
 const translations = {
     es: {
         // Títulos principales
+        'title': 'LZ77 Demo',
+        'nav.encoder': 'Encoder',
+        'nav.decoder': 'Decoder',
         'encoder.title': 'LZ77 Demo - Encoder',
         'decoder.title': 'LZ77 Demo - Decoder',
         
@@ -81,6 +84,9 @@ const translations = {
     
     en: {
         // Main titles
+        'title': 'LZ77 Demo',
+        'nav.encoder': 'Encoder',
+        'nav.decoder': 'Decoder',
         'encoder.title': 'LZ77 Demo - Encoder',
         'decoder.title': 'LZ77 Demo - Decoder',
         
@@ -160,6 +166,9 @@ const translations = {
     
     gl: {
         // Títulos principais
+        'title': 'LZ77 Demo',
+        'nav.encoder': 'Encoder',
+        'nav.decoder': 'Decoder',
         'encoder.title': 'LZ77 Demo - Encoder',
         'decoder.title': 'LZ77 Demo - Decoder',
         
@@ -263,7 +272,7 @@ function setLanguage(lang) {
     document.documentElement.lang = lang;
     
     // Actualizar selector
-    const selector = document.getElementById('languageSelector');
+    const selector = document.getElementById('langSelect');
     if (selector) selector.value = lang;
     
     // Traducir elementos con atributo data-i18n
@@ -291,18 +300,11 @@ function toggleTheme() {
 
 function applyTheme() {
     localStorage.setItem('lz77-theme', currentTheme);
-    
+
     if (currentTheme === 'light') {
         document.documentElement.setAttribute('data-theme', 'light');
     } else {
         document.documentElement.removeAttribute('data-theme');
-    }
-    
-    // Actualizar icono del botón
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-        themeToggle.textContent = currentTheme === 'dark' ? t('theme.light') : t('theme.dark');
-        themeToggle.title = t('theme.toggle');
     }
 }
 
